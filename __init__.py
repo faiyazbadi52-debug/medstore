@@ -1,0 +1,13 @@
+Flask==3.0.3
+Flask-SQLAlchemy==3.1.1
+Flask-JWT-Extended==4.6.0
+Flask-CORS==4.0.0
+Flask-Limiter==3.7.0
+PyMySQL==1.1.1
+bcrypt==4.1.3
+python-dotenv==1.0.1
+marshmallow==3.21.3
+cryptography==42.0.8
+Werkzeug==3.0.3
+gunicorn==22.0.0
+bleach==6.1.0

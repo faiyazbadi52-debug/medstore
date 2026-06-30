@@ -1,0 +1,56 @@
+import { useEffect, useState } from "react";
+import { Loader2, TrendingUp, Package, Clock, CheckCircle, XCircle, Truck } from "lucide-react";
+import api from "../../utils/api";
+
+const Stat = ({ label, value, icon: Icon, color, bg }) => (
+  <div className="card flex items-center gap-4">
+    <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${bg}`}>
+      <Icon size={22} className={color} />
+    </div>
+    <div>
+      <p className="text-2xl font-bold text-gray-900">{value}</p>
+      <p className="text-xs text-gray-500 font-medium mt-0.5">{label}</p>
+    </div>
+  </div>
+);
+
+export default function AdminDashboard() {
+  const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    api.get("/admin/dashboard")
+      .then((r) => setStats(r.data))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) return (
+    <div className="flex justify-center py-20"><Loader2 size={28} className="animate-spin text-brand-500" /></div>
+  );
+
+  return (
+    <div>
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+        <p className="text-gray-500 text-sm mt-1">Overview of your store orders</p>
+      </div>
+
+      {/* Revenue highlight */}
+      <div className="bg-gradient-to-br from-brand-600 to-brand-800 rounded-2xl p-5 mb-6 text-white">
+        <p className="text-brand-100 text-sm font-medium mb-1">Total Revenue (Delivered)</p>
+        <p className="text-4xl font-bold">₹{stats.total_revenue.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</p>
+        <p className="text-brand-200 text-xs mt-2">{stats.delivered} orders delivered</p>
+      </div>
+
+      {/* Stats grid */}
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+        <Stat label="Total Orders" value={stats.total_orders} icon={Package} color="text-gray-600" bg="bg-gray-100" />
+        <Stat label="Pending" value={stats.pending} icon={Clock} color="text-yellow-600" bg="bg-yellow-50" />
+        <Stat label="Confirmed" value={stats.confirmed} icon={CheckCircle} color="text-blue-600" bg="bg-blue-50" />
+        <Stat label="Preparing" value={stats.preparing} icon={TrendingUp} color="text-purple-600" bg="bg-purple-50" />
+        <Stat label="Out for Delivery" value={stats.out_for_delivery} icon={Truck} color="text-orange-600" bg="bg-orange-50" />
+        <Stat label="Cancelled" value={stats.cancelled} icon={XCircle} color="text-red-600" bg="bg-red-50" />
+      </div>
+    </div>
+  );
+}
